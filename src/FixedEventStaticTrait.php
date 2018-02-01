@@ -6,13 +6,13 @@
  * Time: 16:17
  */
 
-namespace Inhere\Library\event;
+namespace MyLib\SimpleEvent;
 
 use MyLib\SysUtil\PhpHelper;
 
 /**
  * Class FixedEventStaticTrait
- * @package Inhere\Library\event
+ * @package MyLib\SimpleEvent
  */
 trait FixedEventStaticTrait
 {

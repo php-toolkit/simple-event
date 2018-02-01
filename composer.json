@@ -1,9 +1,9 @@
 {
-  "name": "mylib/utils",
+  "name": "mylib/simple-event",
   "type": "library",
-  "description": "some helper tool library of the php",
+  "description": "some simple event tool library of the php",
   "keywords": ["library","tool","php"],
-  "homepage": "https://github.com/php-mylib/utils",
+  "homepage": "https://github.com/php-mylib/simple-event",
   "license": "MIT",
   "authors": [
     {
@@ -14,11 +14,11 @@
   ],
   "require": {
     "php": ">=7.0.0",
-    "mylib/arr-utils": "^1.0.0"
+    "mylib/php-utils": "^1.0.0"
   },
   "autoload": {
     "psr-4": {
-      "MyLib\\Utils\\" : "src/"
+      "MyLib\\SimpleEvent\\" : "src/"
     }
   },
   "suggest": {

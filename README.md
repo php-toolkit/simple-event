@@ -1,4 +1,4 @@
-# Simple Config for php
+# Simple event for php
 
 
 ## license
