@@ -3,7 +3,7 @@
 ## install
  
 ```bash
-composer require mylib/simple-event
+composer require toolkit/simple-event
 ```
 
 ## license
