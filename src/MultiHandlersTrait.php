@@ -6,25 +6,18 @@
  * Time: 16:17
  */
 
-namespace MyLib\SimpleEvent;
+namespace Toolkit\SimpleEvent;
 
-use MyLib\SysUtil\PhpHelper;
+use Toolkit\PhpUtil\PhpHelper;
 
 /**
  * Class EventTrait
- * @package MyLib\SimpleEvent
+ * @package Toolkit\SimpleEvent
  */
-trait EventTrait
+trait MultiHandlersTrait
 {
     /**
-     * set the supported events, if you need.
-     *  if it is empty, will allow register any event.
-     * @var array
-     */
-    protected $supportedEvents = [];
-
-    /**
-     * registered Events
+     * registered event names
      * @var array
      * [
      *  'event' => bool, // is once event
@@ -38,36 +31,45 @@ trait EventTrait
     private $eventHandlers = [];
 
     /**
+     * set the supported event names, if you need.
+     *  if it is empty, will allow register any event.
+     * @var string[]
+     */
+    protected $allowedEvents = [];
+
+    /**
      * register a event handler
      * @param $event
      * @param callable $handler
      * @param bool $once
      */
-    public function on($event, callable $handler, $once = false)
+    public function on(string $event, callable $handler, bool $once = false)
     {
-        if ($this->isSupportedEvent($event)) {
+        $event = \trim($event);
+
+        if ($this->isAllowedEvent($event)) {
+            $this->events[$event] = $once;
             $this->eventHandlers[$event][] = $handler;
-            $this->events[$event] = (bool)$once;
         }
     }
 
     /**
      * register a once event handler
-     * @param $event
+     * @param string $event
      * @param callable $handler
      */
-    public function once($event, callable $handler)
+    public function once(string $event, callable $handler)
     {
         $this->on($event, $handler, true);
     }
 
     /**
      * trigger event
-     * @param $event
-     * @param array $args
+     * @param string $event
+     * @param array ...$args
      * @return bool
      */
-    public function fire($event, array $args = [])
+    public function fire(string $event, ...$args)
     {
         if (!isset($this->events[$event])) {
             return false;
@@ -94,13 +96,12 @@ trait EventTrait
      * @param string $event
      * @return mixed
      */
-    public function off($event)
+    public function off(string $event)
     {
         if ($this->hasEvent($event)) {
             $handler = $this->eventHandlers[$event];
 
             unset($this->events[$event], $this->eventHandlers[$event]);
-
             return $handler;
         }
 
@@ -116,25 +117,21 @@ trait EventTrait
     }
 
     /**
-     * @param $event
+     * @param string $event
      * @return bool
      */
-    public function hasEvent($event)
+    public function hasEvent(string $event): bool
     {
         return isset($this->events[$event]);
     }
 
     /**
-     * @param $event
+     * @param string $event
      * @return bool
      */
-    public function isOnce($event)
+    public function isOnceEvent(string $event): bool
     {
-        if ($this->hasEvent($event)) {
-            return $this->events[$event];
-        }
-
-        return false;
+        return $this->events[$event] ?? false;
     }
 
     /**
@@ -142,13 +139,13 @@ trait EventTrait
      * @param $event
      * @return bool
      */
-    public function isSupportedEvent($event)
+    public function isAllowedEvent(string $event): bool
     {
-        if (!$event || !preg_match('/[a-zA-z][\w-]+/', $event)) {
+        if (!$event) {
             return false;
         }
 
-        if ($ets = $this->supportedEvents) {
+        if ($ets = $this->allowedEvents) {
             return \in_array($event, $ets, true);
         }
 
@@ -158,23 +155,23 @@ trait EventTrait
     /**
      * @return array
      */
-    public function getSupportEvents()
+    public function getAllowedEvents(): array
     {
-        return $this->supportedEvents;
+        return $this->allowedEvents;
     }
 
     /**
-     * @param array $supportedEvents
+     * @param array $allowedEvents
      */
-    public function setSupportEvents(array $supportedEvents)
+    public function setAllowedEvents(array $allowedEvents)
     {
-        $this->supportedEvents = $supportedEvents;
+        $this->allowedEvents = $allowedEvents;
     }
 
     /**
      * @return array
      */
-    public function getEvents()
+    public function getEvents(): array
     {
         return $this->events;
     }
@@ -182,7 +179,7 @@ trait EventTrait
     /**
      * @return int
      */
-    public function getEventCount()
+    public function getEventCount(): int
     {
         return \count($this->events);
     }
